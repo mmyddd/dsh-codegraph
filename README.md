@@ -10,7 +10,7 @@ DSH（DeepSeek Harness）host 插件：把 lazycodex（`omo` 插件）里**向�
 | 能力 | lazycodex（Codex） | dsh-codegraph（DSH） |
 | --- | --- | --- |
 | 工具注入 | `.mcp.json` 的 `codegraph` MCP server → `codegraph_explore` | spawn vendored `serve.js` 作为 MCP server，把 `codegraph_explore` 注册为 `mcp__codegraph__codegraph_explore` |
-| 上下文指引 | SessionStart/PostToolUse hooks 与 skills 注入 CodeGraph 使用说明 | `ctx.systemPrompt.section({ name: 'codegraph:policy' })` 注入系统提示词 |
+| 上下文指引 | SessionStart/PostToolUse hooks 与 skills 注入 CodeGraph 使用说明 | **工具调用前**：`ctx.systemPrompt.section({ name: 'codegraph:policy' })` 注入系统提示词；连接成功后优先用 codegraph MCP server 自带的 `instructions`（权威详尽），未连接时回退到配置的 `guidanceSection` |
 | 自动索引引导 | SessionStart hook → `codegraph init` | `agent/session-start` → 复用 vendored `cli.js hook session-start` 后台执行 `codegraph init`（含项目锁、指数退避冷却、后台 worker） |
 | 未初始化指引 | PostToolUse hook → additionalContext | `tools/result` 监听 codegraph 工具，检测到「未初始化」→ `agent.inject()` 向下一次请求注入指引 |
 

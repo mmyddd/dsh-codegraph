@@ -91,6 +91,13 @@ async function verifyMcpBridge() {
     log('registered tools:', names.join(', '))
     if (names.length === 0) throw new Error('no tools registered from codegraph MCP server')
 
+    // 工具调用前提示词注入：验证 MCP server 的 instructions 被捕获（供系统提示词 section 使用）。
+    if (typeof client.instructions === 'string' && client.instructions.length > 0) {
+      log(`captured server instructions (${client.instructions.length} chars): ${JSON.stringify(client.instructions.slice(0, 64))}…`)
+    } else {
+      throw new Error('no instructions captured from codegraph MCP server')
+    }
+
     const explore = registered.find((d) => d.name === 'mcp__codegraph__codegraph_explore')
     if (explore === undefined) throw new Error('mcp__codegraph__codegraph_explore not registered')
 
