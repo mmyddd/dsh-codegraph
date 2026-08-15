@@ -1,6 +1,6 @@
 {
   "name": "dsh-codegraph",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "DSH host 插件：把 lazycodex（omo）里的 CodeGraph 上下文注入移植到 DeepSeek Harness —— 通过 MCP 桥向模型暴露 codegraph_explore，会话开始自动 codegraph init 引导索引，工具结果提示未初始化时注入初始化指引。",
   "type": "module",
   "main": "lib/index.js",
