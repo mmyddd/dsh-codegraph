@@ -37,26 +37,33 @@ dsh-codegraph/
 `lib/codegraph/serve.js` / `cli.js` 是 lazycodex 构建产物（`bun build` 打成自包含 Node ESM，
 无运行时依赖），原样复制，未做改动。
 
-## 挂载（三选一）
+## 挂载
 
-```sh
-# 1. 本地 link（推荐开发方式）
-dsh plugin --profile web add link:C:/Git/dsh-codegraph
+### 本地挂载（开发）
 
-# 2. npm 已发布后
-dsh plugin --profile web add dsh-codegraph
+手动改 profile（`~/.dsh/profiles/web/`）：
 
-# 3. 手动改 profile（~/.dsh/profiles/web/）
-#    package.json dependencies 加 "dsh-codegraph": "^0.1.0"
-#    dsh.profile.bundles 追加 "dsh-codegraph"
-#    cordis.patch.yml 追加：
-#    - insert:
-#        - id: codegraph
-#          name: 'dsh-codegraph'
+- `package.json` 的 `dependencies` 加 `"dsh-codegraph": "link:C:/Git/dsh-codegraph"`
+- `package.json` 的 `dsh.profile.bundles` 追加 `"dsh-codegraph"`
+- `cordis.patch.yml` 追加：
+
+```yaml
+- insert:
+    - id: codegraph
+      name: 'dsh-codegraph'
 ```
 
 挂载后 `pnpm install`（profile 目录），**完全退出并重开 DSH web**（bundle 型插件需要重启加载），
 然后重启会话。模型侧应能看到 `mcp__codegraph__codegraph_explore` 工具。
+
+> 本地 link 时，插件目录需要能解析 `@deepseek-ai` 的 host peer 包；仓库已把这些包放进
+> `devDependencies`，clone 后先 `npm install` 即可。
+
+### npm 已发布
+
+```sh
+dsh plugin --profile web add dsh-codegraph
+```
 
 ## 配置
 
