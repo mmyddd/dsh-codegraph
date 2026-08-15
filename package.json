@@ -19,6 +19,7 @@
   ],
   "scripts": {
     "test": "node --test test/*.test.mjs",
+    "verify": "node scripts/verify.mjs",
     "prepublishOnly": "node --test test/*.test.mjs"
   },
   "engines": {
