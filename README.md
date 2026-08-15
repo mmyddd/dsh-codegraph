@@ -142,6 +142,25 @@ dsh web --dump-config | grep codegraph      # 组合里能看到插件行
 | `.codex-plugin/plugin.json` hooks | `lib/index.js` 的 `ctx.systemPrompt` / `agent/session-start` / `tools/result` |
 | `.mcp.json` server `codegraph` | `lib/mcp-client.js`（DSH 侧 MCP 客户端桥） |
 
+## 与 lazycodex 的行为对齐与已知差异
+
+**完全对齐（字节级复用，行为一致）**
+- `lib/codegraph/serve.js` / `cli.js` 为 lazycodex 构建产物原样复制：二进制解析顺序、auto-provision、
+  Node 版本门、项目排除策略、`unavailable` stub、`includeCode` 契约重写、daemon 模式、
+  `CODEGRAPH_NO_DOWNLOAD` / telemetry 关闭等全部保留。
+- 会话开始引导全流程：精确 `.codegraph/codegraph.db` 探测、祖先覆盖（`skipped-nested-root`）、
+  原子锁（`skipped-locked`）、stale 锁恢复 + 指数冷却（15min 起、翻倍至 24h）、后台 worker、
+  `~/.omo/codegraph/session-start.jsonl` 落盘。
+- 未初始化检测逻辑（正则集）与 `mcp__codegraph__codegraph_explore` 工具命名一致；
+  工具调用前指引（含 codegraph 服务器自带 `instructions`）已注入系统提示词。
+
+**已知差异 / 限制**
+| 项 | lazycodex | dsh-codegraph | 影响 |
+| --- | --- | --- | --- |
+| 受管安装目录 | `trusted_install_dir`（仅 OMO config） | 插件 `installDir` 只映射 `CODEGRAPH_INSTALL_DIR` 环境变量 | 重定向二进制安装目录需在 OMO config 配 `[codex].codegraph.install_dir` |
+| 组件 Node 运行时 | 用 Node 24 LTS 跑 serve.js/cli.js（规避 Node≥25 崩溃） | 默认用 DSH 的 `process.execPath` | provisioned 解析不受影响；PATH 解析在 Node≥25 下会被 node gate 拦（可设 `CODEGRAPH_ALLOW_UNSAFE_NODE=1`） |
+| 未暴露的配置键 | `auto_provision` / `excluded_roots` / `daemon` / `session_start_cooldown_ms` / `watch_debounce_ms`（OMO config） | 未暴露为插件配置 | 这些键仍被 vendored 代码从 OMO config 读取，如需控制请写 `~/.omo/omo.jsonc` 或项目 `.omo/omo.jsonc` |
+
 ## 许可
 
 本仓库的插件胶水代码为 MIT（见 `LICENSE`）；`lib/codegraph/` 下的构建产物与其
