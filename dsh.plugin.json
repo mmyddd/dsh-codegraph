@@ -1,0 +1,15 @@
+{
+  "id": "dsh-codegraph",
+  "version": "0.1.0",
+  "main": "./lib/index.js",
+  "description": "CodeGraph 上下文注入：向模型暴露 codegraph_explore（mcp__codegraph__codegraph_explore）+ 会话开始自动索引引导 + 未初始化指引（lazycodex omo components/codegraph 的 DSH 移植）",
+  "engines": {
+    "dsh": ">=0.0.1"
+  },
+  "contributes": {
+    "tools": [
+      "mcp__codegraph__codegraph_explore"
+    ],
+    "skills": []
+  }
+}

@@ -1,0 +1,11 @@
+# dsh-codegraph bundle patch
+#
+# 通过官方 CLI 安装时（
+#   dsh plugin --profile web add link:C:/Git/dsh-codegraph
+# ）或手动把下面这一段追加到 profile 的 cordis.patch.yml：
+# - insert:
+#     - id: codegraph
+#       name: 'dsh-codegraph'
+- insert:
+    - id: codegraph
+      name: 'dsh-codegraph'
