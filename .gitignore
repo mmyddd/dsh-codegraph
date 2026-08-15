@@ -3,3 +3,9 @@ node_modules/
 .DS_Store
 dist/
 .tmp/
+
+# 测试/验证临时目录（测试中断时可能残留）
+.io-test-*/
+.diag3-*/
+.verify-scratch/
+.diag-project/
